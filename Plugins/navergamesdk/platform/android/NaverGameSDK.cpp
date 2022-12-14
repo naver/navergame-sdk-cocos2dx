@@ -1,6 +1,3 @@
-
-
-
 #include "NaverGameSDK.h"
 #include "platform/android/jni/JniHelper.h"
 
@@ -34,6 +31,20 @@ namespace nng {
         }
     }
 
+    char* NaverGameSDK::getCountryCode() {
+        JniMethodInfo t;
+        jstring countryCodeJstr = nullptr;
+        if (getStaticMethod(t, "getCountryCode", "()Ljava/lang/String;")) {
+            countryCodeJstr = (jstring)t.env->CallStaticObjectMethod(t.classID, t.methodID);
+            t.env->DeleteLocalRef(t.classID);
+        }
+
+        auto countryCode = countryCodeJstr == nullptr? "" : JniHelper::jstring2string(countryCodeJstr);
+        CCLOG("countryCode = %s", (char*)countryCode.c_str());
+
+        return (char*)countryCode.c_str();
+    }
+
     void NaverGameSDK::startHomeBanner() {
         JniMethodInfo t;
         if (getStaticMethod(t, "startHomeBanner", "()V")) {
@@ -58,10 +69,49 @@ namespace nng {
         }
     }
 
-    void NaverGameSDK::startFeed(int feedId) {
+    void NaverGameSDK::startFeed(int feedId, bool isTempFeedId) {
         JniMethodInfo t;
-        if (getStaticMethod(t, "startFeed", "(I)V")) {
-            t.env->CallStaticVoidMethod(t.classID, t.methodID, feedId);
+        if (getStaticMethod(t, "startFeed", "(IZ)V")) {
+            t.env->CallStaticVoidMethod(t.classID, t.methodID, feedId,isTempFeedId);
+            t.env->DeleteLocalRef(t.classID);
+        }
+    }
+    void NaverGameSDK::setCanWriteFeedByScreenshot(bool isTempFeedId) {
+        JniMethodInfo t;
+        if (getStaticMethod(t, "enableScreenShotDetector", "(Z)V")) {
+            t.env->CallStaticVoidMethod(t.classID, t.methodID, isTempFeedId);
+            t.env->DeleteLocalRef(t.classID);
+        }
+    }
+    void NaverGameSDK::setGameId(std::string gameId) {
+        JniMethodInfo t;
+        if (getStaticMethod(t, "putGameId","(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V")) {
+            jstring _gameId = t.env->NewStringUTF(gameId.c_str());
+            t.env->CallStaticVoidMethod(t.classID, t.methodID, _gameId);
+            t.env->DeleteLocalRef(_gameId);
+            t.env->DeleteLocalRef(t.classID);
+        }
+    }
+
+    void NaverGameSDK::startFeedWriting(int boardId, std::string title, std::string text, std::string imageFilePath) {
+        JniMethodInfo t;
+        if (getStaticMethod(t, "writeFeed","(ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;)V")) {
+            jstring _title = t.env->NewStringUTF(title.c_str());
+            jstring _text = t.env->NewStringUTF(text.c_str());
+            jstring _imageFilePath = t.env->NewStringUTF(imageFilePath.c_str());
+
+            t.env->CallStaticVoidMethod(t.classID, t.methodID, boardId,_title, _text, _imageFilePath);
+
+            t.env->DeleteLocalRef(_title);
+            t.env->DeleteLocalRef(_text);
+            t.env->DeleteLocalRef(_imageFilePath);
+            t.env->DeleteLocalRef(t.classID);
+        }
+    }
+    void NaverGameSDK::naverLogout() {
+        JniMethodInfo t;
+        if (getStaticMethod(t, "logout", "()V")) {
+            t.env->CallStaticVoidMethod(t.classID, t.methodID);
             t.env->DeleteLocalRef(t.classID);
         }
     }
@@ -73,6 +123,7 @@ namespace nng {
             t.env->DeleteLocalRef(t.classID);
         }
     }
+
 
     extern "C" {
         JNIEXPORT void JNICALL

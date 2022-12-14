@@ -33,18 +33,15 @@ static NaverGameSDKListener *sdkListener = nullptr;
 void setParentViewController() {
     UIWindow *window = UIApplication.sharedApplication.keyWindow;
     [NNGSDKManager.shared setParentViewController:window.rootViewController];
-    NNGSDKManager.shared.delegate = delegate;
+    NNGSDKManager.shared.delegate = [[NaverGameSDKDelegateProxy alloc] init];
 }
 
 
 // Set client ID, client secret, and lounge ID for SDK
 void NaverGameSDK::init(std::string clientId, std::string clientSecret, std::string loungeId) {
-    delegate = [[NaverGameSDKDelegateProxy alloc] init];
-    
     NSString *cId = [NSString stringWithUTF8String:clientId.c_str()];
     NSString *cSec = [NSString stringWithUTF8String:clientSecret.c_str()];
     NSString *lId = [NSString stringWithUTF8String:loungeId.c_str()];
-    
     [NNGSDKManager.shared setClientId:cId clientSecret:cSec loungeId:lId];
 }
 
@@ -58,6 +55,24 @@ void NaverGameSDK::setSdkListener(NaverGameSDKListener* listener) {
 // The ISO_3166-1 alpha-2 country code of each device.
 char* NaverGameSDK::getCountryCode() {
     return (char *)NNGSDKManager.shared.countryCode.UTF8String;
+}
+
+
+// The version of the SDK.
+char* NaverGameSDK::getVersion() {
+    return (char *)NNGSDKManager.shared.version.UTF8String;
+}
+
+
+// Set the flag which determines whether the shortcut to write feed is presented after capturing screen or not. YES as default.
+void NaverGameSDK::setCanWriteFeedByScreenshot(bool canWriteFeedByScreenshot) {
+    NNGSDKManager.shared.canWriteFeedByScreenshot = canWriteFeedByScreenshot;
+}
+
+
+// Set the game ID of current member.
+void NaverGameSDK::setGameId(std::string gameId) {
+    [NNGSDKManager.shared registerMemberGameId:[NSString stringWithUTF8String:gameId.c_str()]];
 }
 
 
@@ -85,13 +100,32 @@ void NaverGameSDK::startBoard(int boardId) {
 // Present the feed identified by a feed ID.
 void NaverGameSDK::startFeed(int feedId, bool isTempFeedId) {
     setParentViewController();
-    [NNGSDKManager.shared presentFeedViewControllerWith:@(feedId) scheduled:isTempFeedId];
+    
+    if (isTempFeedId == false) {
+        [NNGSDKManager.shared presentFeedViewControllerWith:@(feedId) scheduled:NO];
+    } else {
+        [NNGSDKManager.shared presentFeedViewControllerWith:@(feedId) scheduled:YES];
+    }
+}
+
+
+// Present the feed writing view. Every parameter is just predefined value for feed writing view to present, so each one is optional.
+void NaverGameSDK::startFeedWriting(int boardId, std::string title, std::string text, std::string imageFilePath) {
+    NSString *ttl = [NSString stringWithUTF8String:title.c_str()];
+    NSString *txt = [NSString stringWithUTF8String:text.c_str()];
+    NSString *ifp = [NSString stringWithUTF8String:imageFilePath.c_str()];
+    [NNGSDKManager.shared presentFeedWritingWithBoardId:@(boardId) title:ttl text:txt imageFilePath:ifp];
 }
 
 
 // Dismiss all SDK-related views.
 void NaverGameSDK::stopSdk() {
     [NNGSDKManager.shared dismiss];
+}
+
+// Logout for Naver ID.
+void NaverGameSDK::naverLogout() {
+    [NNGSDKManager.shared logout];
 }
 
 } /* namespace nng */

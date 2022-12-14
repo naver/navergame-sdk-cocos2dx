@@ -10,55 +10,132 @@
 
 
 @protocol NNGSDKDelegate;
-@class UIViewController;
+@class UIViewController, UIImage;
 
 
 @interface NNGSDKManager : NSObject
 
-// The singleton instance of SDK manager.
+/**
+ * The singleton instance of SDK manager.
+ */
 @property (class, nonatomic, readonly) NNGSDKManager *shared;
 
-// Your client ID.
+/**
+ * Your client ID.
+ */
 @property (strong, nonatomic, readonly) NSString *clientId;
 
-// Your client Secret.
+/**
+ * Your client Secret.
+ */
 @property (strong, nonatomic, readonly) NSString *clientSecret;
 
-// Your lounge ID.
+/**
+ * Your lounge ID.
+ */
 @property (strong, nonatomic, readonly) NSString *loungeId;
 
-// The ISO_3166-1 alpha-2 country code of each device.
+/**
+ * The ISO_3166-1 alpha-2 country code of each device.
+ */
 @property (strong, nonatomic, readonly) NSString *countryCode;
 
-// The version of the SDK.
+/**
+ * The version of the SDK.
+ */
 @property (strong, nonatomic, readonly) NSString *version;
 
-// Your App Scheme.
+/**
+ * Your App Scheme. It is set automatically.
+ */
 @property (strong, nonatomic) NSString *appScheme;
 
-// The delegate for SDK manager.
+/**
+ * The flag which determines whether the shortcut to write feed is presented after capturing screen or not. YES as default.
+ */
+@property (assign, nonatomic) BOOL canWriteFeedByScreenshot;
+
+/**
+ * The delegate for SDK manager.
+ */
 @property (weak, nonatomic) id <NNGSDKDelegate> delegate;
 
-// Set client ID, client secret, and lounge ID for SDK.
+
+/**
+ * Set client ID, client secret, and lounge ID for SDK.
+ *
+ * @param clientId  Client ID. (Required)
+ * @param clientSecret  Client secret. (Required)
+ * @param loungeId  Lounge ID. (Required)
+ */
 - (void)setClientId:(NSString *)clientId clientSecret:(NSString *)clientSecret loungeId:(NSString *)loungeId;
 
-// Set the root view and the delegate for SDK.
+/**
+ * Set the root view for SDK.
+ *
+ * @param parent  Parent view controller for SDK views. (Required)
+ */
 - (void)setParentViewController:(UIViewController *)parent;
 
-// Present the banner list.
+/**
+ * Register the game ID of current member.
+ *
+ * @param memberGameId  Game ID of current member. (Required)
+ */
+- (void)registerMemberGameId:(NSString *)memberGameId;
+
+/**
+ * Present banners.
+ */
 - (void)presentBannerViewController;
 
-// Present a notice while your game is not on service.
+/**
+ * Present a notice while your game is not on service.
+ */
 - (void)presentSorryViewController;
 
-// Present the list of feeds identified by a predefined board ID which represents a board.
+/**
+ * Present the a board.
+ *
+ * @param boardId   Board ID. You can find it in the webpage URL of a board of the form https://game.naver.com/lounge/{loungeId}/board/{boardId}. If it is null or 0, the board of all feed will present. (Optional)
+ */
 - (void)presentBoardViewControllerWith:(NSNumber *)boardId;
 
-// Present the feed identified by a feed ID.
+/**
+ * Present a feed.
+ *
+ * @param feedId    Feed ID. You can find it in the webpage URL of a feed of the form https://game.naver.com/lounge/{loungeId}/board/detail/{feedId}. (Required)
+ * @param scheduled Flag which determines whether the feed to present is scheduled of not. (Required)
+ */
 - (void)presentFeedViewControllerWith:(NSNumber *)feedId scheduled:(BOOL)scheduled;
 
-// Dismiss all SDK-related views.
+/**
+ * Present the feed writing view.
+ * Every parameter is just predefined value for feed writing view to present, so each one is optional.
+ *
+ * @param boardId   Predefined board ID of the board to contain new feed. You can find it in the webpage URL of a board of the form https://game.naver.com/lounge/{loungeId}/board/{boardId}. (Optional)
+ * @param title   Predefined title of new feed. (Optional)
+ * @param text   Predefined text content of new feed. (Optional)
+ * @param imageFilePath   File path for predefined attached image of new feed. Only 1 image can be attached on feed written by using SDK. (Optional)
+ */
+- (void)presentFeedWritingWithBoardId:(NSNumber *)boardId title:(NSString *)title text:(NSString *)text imageFilePath:(NSString *)imageFilePath;
+
+/**
+ * Dismiss all SDK-related views.
+ */
 - (void)dismiss;
+
+/**
+ * Logout
+ */
+- (void)logout;
+
+/**
+ * Handle callback urls for the Naver login.
+ *
+ * @param url   Callback URL from Naver login service.
+ */
+- (BOOL)handleCallbackUrl:(NSURL *)url;
 
 @end
 
@@ -67,13 +144,19 @@
 
 @optional
 
-// The delegate method called when SDK starts.
+/**
+ * The delegate method called when SDK starts.
+ */
 - (void)nngSDKDidLoad;
 
-// The delegate method called when SDK ends.
+/**
+ * The delegate method called when SDK ends.
+ */
 - (void)nngSDKDidUnload;
 
-// The delegate method called when a predefined in-game board code is received.
+/**
+ * The delegate method called when a predefined in-game board code is received.
+ */
 - (void)nngSDKDidReceiveInGameMenuCode:(NSString *)inGameMenuCode;
 
 @end

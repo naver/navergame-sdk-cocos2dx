@@ -34,6 +34,8 @@ enum CafeSdkTags {
     kTagSorryBanner,
     kTagFeedList,
     kTagFeed,
+    kTagFeedWrite,
+    kTagLogout,
 };
 
 Scene* HelloWorld::createScene()
@@ -212,6 +214,35 @@ void HelloWorld::initSdkButtons(Menu* menu) {
     label4->setPosition(menu4->getContentSize().width * 0.5, menu4->getContentSize().height * 0.5);
     menu4->addChild(label4);
     menu->addChild(menu4);
+    
+    auto menu5 = MenuItemImage::create("icon1.png", "icon1.png",
+                                       CC_CALLBACK_1(HelloWorld::menuCallback, this));
+    menu5->setTag(kTagFeedWrite);
+    menu5->setPosition(Vec2(
+            menu4->getPositionX() + menu5 -> getContentSize().width * 1.5,
+            menu1->getPositionY()));
+    auto label5 = Label::createWithSystemFont("Feed\nWrite", "", 10);
+    label5->setAlignment(TextHAlignment::CENTER, TextVAlignment::CENTER);
+    label5->setTextColor(Color4B::BLACK);
+    label5->enableOutline(Color4B::WHITE, 1);
+    label5->setPosition(menu5->getContentSize().width * 0.5, menu5->getContentSize().height * 0.5);
+    menu5->addChild(label5);
+    menu->addChild(menu5);
+    
+    
+    auto menu6 = MenuItemImage::create("icon1.png", "icon1.png",
+                                       CC_CALLBACK_1(HelloWorld::menuCallback, this));
+    menu6->setTag(kTagLogout);
+    menu6->setPosition(Vec2(
+            menu5->getPositionX() + menu6 -> getContentSize().width * 1.5,
+            menu1->getPositionY()));
+    auto label6 = Label::createWithSystemFont("Naver\nLogout", "", 10);
+    label6->setAlignment(TextHAlignment::CENTER, TextVAlignment::CENTER);
+    label6->setTextColor(Color4B::BLACK);
+    label6->enableOutline(Color4B::WHITE, 1);
+    label6->setPosition(menu6->getContentSize().width * 0.5, menu6->getContentSize().height * 0.5);
+    menu6->addChild(label6);
+    menu->addChild(menu6);
 }
 
 void HelloWorld::menuCallback(Ref* pSender) {
@@ -231,9 +262,16 @@ void HelloWorld::menuCallback(Ref* pSender) {
             break;
 
         case kTagFeed:
-            nng::NaverGameSDK::startFeed(50133, false);
+            nng::NaverGameSDK::startFeed(1250721, false);
             break;
 
+        case kTagFeedWrite:
+            nng::NaverGameSDK::startFeedWriting(1, "Title", "text text text..", "");
+            break;
+
+        case kTagLogout:
+            nng::NaverGameSDK::naverLogout();
+            
         default:
             break;
     }

@@ -1,5 +1,7 @@
 package com.navercorp.nng.cocos2dx.sample;
 
+import android.widget.Toast;
+
 import com.navercorp.nng.android.sdk.NNGCallbackListener;
 import com.navercorp.nng.android.sdk.NNGLink;
 
@@ -21,25 +23,37 @@ public class NNGSdk {
     }
 
     private static void initListeners() {
+
         NNGLink.setSdkLoadListener(new NNGCallbackListener() {
             @Override
             public void onSdkDidLoaded() {
-                onSdkStarted();
+
             }
 
             @Override
             public void onSdkDidUnloaded() {
-                onSdkStopped();
+
             }
 
             @Override
-            public void onNaverLoggedIn(boolean success) { }
+            public void onCallInGameMenuCode(String inGameMenuCode) {
+                Toast.makeText(getActivity(),"onCallInGameMenuCode [" + inGameMenuCode + "]",Toast.LENGTH_LONG).show();
+            }
 
             @Override
-            public void onCallInGameMenuCode(String moveTo) {
-                onSdkReceiveInGameMenuCode(moveTo);
+            public void onNaverLoggedIn() {
+
+            }
+
+            @Override
+            public void onNaverLoggedOut() {
+
             }
         });
+    }
+
+    public static String getCountryCode() {
+        return NNGLink.getCountryCode(getActivity());
     }
 
     public static void startHomeBanner() {
@@ -54,8 +68,29 @@ public class NNGSdk {
         NNGLink.startBoard(getActivity(), boardId);
     }
 
-    public static void startFeed(int feedId) {
-        NNGLink.startFeed(getActivity(), feedId);
+    public static void startFeed(int feedId, boolean isTempFeedId) {
+        NNGLink.startFeed(getActivity(), feedId, isTempFeedId);
+    }
+    public static void putGameId(String gameId) {
+        NNGLink.putGameId(getActivity(), gameId);
+    }
+
+    public static void enableScreenShotDetector(Boolean enable) {
+        NNGLink.enableScreenShotDetector(enable);
+    }
+
+    public static void logout() {
+        NNGLink.logout(getActivity());
+    }
+
+    public static void writeFeed(int boardId,
+                                 String title,
+                                 String content,
+                                 String imageUri) {
+        NNGLink.writeFeed(getActivity(), boardId,title,content,imageUri);
+    }
+    public static void writeFeed() {
+        NNGLink.writeFeed(getActivity());
     }
 
     public static void stopSdk() {
