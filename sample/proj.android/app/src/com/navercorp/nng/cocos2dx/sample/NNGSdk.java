@@ -40,15 +40,6 @@ public class NNGSdk {
                 Toast.makeText(getActivity(),"onCallInGameMenuCode [" + inGameMenuCode + "]",Toast.LENGTH_LONG).show();
             }
 
-            @Override
-            public void onNaverLoggedIn() {
-
-            }
-
-            @Override
-            public void onNaverLoggedOut() {
-
-            }
         });
     }
 

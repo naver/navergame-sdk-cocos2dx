@@ -26,9 +26,6 @@ namespace nng {
         // Sdk를 실행하는 기기의 국가코드를 가져옵니다.
         static char* getCountryCode();
 
-        // Sdk의 버전을 가져옵니다.
-        static char* getVersion();
-        
         // Sdk의 홈배너를 실행합니다.
         static void startHomeBanner();
 
@@ -41,9 +38,14 @@ namespace nng {
         // Sdk의 라운지 FeedId와 매핑되는 글상세를 실행합니다.
         static void startFeed(int feedId, bool isTempFeedId);
 
-        static void setCanWriteFeedByScreenshot(bool Enabled);
-        static void setGameId(std::string GameId);
-        static void startFeedWriting(int BoardId, std::string Title, std::string Text, std::string ImageFilePath);
+        static void setCanWriteFeedByScreenshot(bool enabled);
+        static void setGameId(std::string gameId);
+        
+        static void setAppName(std::string appName);
+        static void setAppScheme(std::string appScheme);
+        static char* getAuthSettingDescription();
+        
+        static void startFeedWriting(int boardId, std::string title, std::string text, std::string imageFilePath);
         static void naverLogout();
 
         // Sdk를 종료시킵니다.

@@ -65,14 +65,29 @@ char* NaverGameSDK::getVersion() {
 
 
 // Set the flag which determines whether the shortcut to write feed is presented after capturing screen or not. YES as default.
-void NaverGameSDK::setCanWriteFeedByScreenshot(bool canWriteFeedByScreenshot) {
-    NNGSDKManager.shared.canWriteFeedByScreenshot = canWriteFeedByScreenshot;
+void NaverGameSDK::setCanWriteFeedByScreenshot(bool enabled) {
+    NNGSDKManager.shared.canWriteFeedByScreenshot = enabled;
 }
 
 
 // Set the game ID of current member.
 void NaverGameSDK::setGameId(std::string gameId) {
     [NNGSDKManager.shared registerMemberGameId:[NSString stringWithUTF8String:gameId.c_str()]];
+}
+
+
+void NaverGameSDK::setAppName(std::string appName) {
+    NNGSDKManager.shared.appName = [NSString stringWithUTF8String:appName.c_str()];
+}
+
+
+void NaverGameSDK::setAppScheme(std::string appScheme) {
+    NNGSDKManager.shared.appName = [NSString stringWithUTF8String:appScheme.c_str()];
+}
+
+
+char* NaverGameSDK::getAuthSettingDescription() {
+    return (char *)NNGSDKManager.shared.authSettingDescription.UTF8String;
 }
 
 
