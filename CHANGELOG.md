@@ -1,3 +1,12 @@
+V.1.3.8
+-------------
+개선사항 :
+iOS
+  deprecated된 UIGraphics API 교체
+Android
+  targetSdk34 대응
+
+
 V.1.3.6
 -------------
 개선사항 :

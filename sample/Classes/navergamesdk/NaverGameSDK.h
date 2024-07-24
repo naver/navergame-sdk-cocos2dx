@@ -25,6 +25,8 @@ namespace nng {
 
         // Sdk를 실행하는 기기의 국가코드를 가져옵니다.
         static char* getCountryCode();
+        
+        static char* getVersion();
 
         // Sdk의 홈배너를 실행합니다.
         static void startHomeBanner();
